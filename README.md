@@ -2,7 +2,8 @@
 
 
 ## LSI 9211-8i flashed to IT mode
-Use DOS to flash firmwware because efi mode does not support things properly https://www.broadcom.com/support/knowledgebase/1211161501344/flashing-firmware-and-bios-on-lsi-sas-hbas  
+Use DOS to flash firmwware because efi mode does not support things properly  
+https://www.broadcom.com/support/knowledgebase/1211161501344/flashing-firmware-and-bios-on-lsi-sas-hbas  
 https://nguvu.org/freenas/Convert-LSI-HBA-card-to-IT-mode/  
 
 
@@ -10,3 +11,12 @@ https://nguvu.org/freenas/Convert-LSI-HBA-card-to-IT-mode/
 Turn on Advanced/CPU Storage Configuration/Hyper M.2 X16 Data (Non-VROC)  
 Turn on CSM  
 Turn off FastBoot  
+
+
+## Proxmox Specific
+
+### Accidentally Wiping LVM before properly destroying it
+Leaves ghost LVM that can't be removed via GUI  
+Gather pve name from ```pvesm status```  
+Delete with ```pvesm remove <<pve name>>```  
+https://192.168.1.208:8006/pve-docs/chapter-pvesm.html#chapter_storage
