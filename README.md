@@ -12,9 +12,31 @@ Turn on Advanced/CPU Storage Configuration/Hyper M.2 X16 Data (Non-VROC)
 Turn on CSM  
 Turn off FastBoot  
 
+## ZFS
+### Troubleshooting
+```
+zpool get all
+```
+
+### ZFS General Settings
+```
+zfs set autotrim=on <<pool name>>
+```
+
+### ZFS Pool Config
+```
+zfs create ZFS/nextcloud
+zfs create ZFS/kubernetes
+zfs create ZFS/proxmox
+
+zfs set quota=750G ZFS/nextcloud
+zfs set quota=250G ZFS/kubernetes
+zfs set quota=100G ZFS/proxmox
+
+zfs set sharenfs=no ZFS/nextcloud //having issues with NFS
+```
 
 ## Proxmox Specific
-
 ### Accidentally Wiping LVM before properly destroying it
 Leaves ghost LVM that can't be removed via GUI  
 Gather pve name from ```pvesm status```  
