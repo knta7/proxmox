@@ -20,10 +20,11 @@ zpool get all
 
 ### ZFS General Settings
 ```
+# For SSD only storage
 zfs set autotrim=on <<pool name>>
 ```
 
-### ZFS Pool Config
+### ZFS Pool & NFS Config
 ```
 zfs create ZFS/nextcloud
 zfs create ZFS/kubernetes
@@ -33,7 +34,11 @@ zfs set quota=750G ZFS/nextcloud
 zfs set quota=250G ZFS/kubernetes
 zfs set quota=100G ZFS/proxmox
 
-zfs set sharenfs=no ZFS/nextcloud //having issues with NFS
+apt install nfs-kernel-server //ensure that nfs-common is off
+
+zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/nextcloud
+zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/kubernetes
+zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/proxmox
 ```
 
 ## Proxmox Specific
