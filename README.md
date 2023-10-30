@@ -8,7 +8,7 @@ https://nguvu.org/freenas/Convert-LSI-HBA-card-to-IT-mode/
 
 
 ## ASUS PRIME x299-A II
-Turn on Advanced/CPU Storage Configuration/Hyper M.2 X16 Data (Non-VROC)  
+Turn on Advanced &rarr; CPU Storage Configuration &rarr; Choose HBA PCIE Slot &rarr; Hyper M.2 X16 Data (Non-VROC)  
 Turn on CSM  
 Turn off FastBoot  
 
@@ -21,7 +21,7 @@ zpool get all
 ### ZFS General Settings
 ```
 # For SSD only storage
-zfs set autotrim=on <<pool name>>
+zfs set autotrim=on {{pool name}}
 ```
 
 ### ZFS Pool & NFS Config
@@ -38,7 +38,13 @@ apt install nfs-kernel-server //ensure that nfs-common is off
 
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/nextcloud
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/kubernetes
-zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/proxmox
+zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/proxmox //unnecessary
+
+# Add nextcloud & kubernetes as ZFS storage
+# Datacenter -> Storage -> ZFS -> Select Dataset, Thin-Provisioning
+
+# Add Proxmox as NFS server
+# Datacenter -> Storage -> NFS
 ```
 
 ## Proxmox Specific
@@ -47,3 +53,12 @@ Leaves ghost LVM that can't be removed via GUI
 Gather pve name from ```pvesm status```  
 Delete with ```pvesm remove <<pve name>>```  
 https://192.168.1.208:8006/pve-docs/chapter-pvesm.html#chapter_storage
+
+
+## Application Specific
+
+### Nextcloud
+https://docs.nextcloud.com/server/latest/admin_manual/maintenance/migrating.html
+
+#### Manual Backup
+Copy data from /mnt/ncdata/{{username}}
