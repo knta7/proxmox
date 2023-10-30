@@ -38,6 +38,7 @@ zfs set quota=100G ZFS/proxmox-other
 
 apt install nfs-kernel-server //ensure that nfs-common is off
 
+// add no_root_squash if need to manually move files into nextcloud directories (need it to allow chown for www-data user) https://serverfault.com/questions/212178/chown-on-a-mounted-nfs-partition-gives-operation-not-permitted
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/nextcloud
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/kubernetes
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/iso
