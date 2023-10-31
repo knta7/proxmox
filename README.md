@@ -67,7 +67,7 @@ https://192.168.1.208:8006/pve-docs/chapter-pvesm.html#chapter_storage
 ![image](https://github.com/knta7/proxmox/assets/107367656/09373160-9136-47fc-9039-9ac46ccf551c)
 
 #### Manual Backup (Offical Documentation)
-https://docs.nextcloud.com/server/latest/admin_manual/maintenance/migrating.html
+https://docs.nextcloud.com/server/latest/admin_manual/maintenance/migrating.html  
 DID NOT WORK AT ALL- most likely because nextcloud versions were too different (database issues)  
 ~~Copy data from /mnt/ncdata/{{username}}  
 Copy nextcloud dir from /var/www/nextcloud
