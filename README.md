@@ -28,7 +28,9 @@ zfs set autotrim=on {{pool name}}
 ```
 zfs create ZFS/nextcloud
 zfs create ZFS/kubernetes
-zfs create ZFS/proxmox
+zfs create ZFS/iso
+zfs create ZFS/proxmox-vm
+zfs create ZFS/proxmox-other
 
 zfs set quota=750G ZFS/nextcloud
 zfs set quota=250G ZFS/kubernetes
@@ -36,7 +38,7 @@ zfs set quota=100G ZFS/iso
 zfs set quota=100G ZFS/proxmox-vm
 zfs set quota=100G ZFS/proxmox-other
 
-apt install nfs-kernel-server //ensure that nfs-common is off
+apt install nfs-kernel-server #ensure that nfs-common is off
 
 # add no_root_squash if need to manually move files into nextcloud directories (need it to allow chown for www-data user) https://serverfault.com/questions/212178/chown-on-a-mounted-nfs-partition-gives-operation-not-permitted
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/nextcloud
