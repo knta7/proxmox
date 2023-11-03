@@ -60,6 +60,56 @@ Gather pve name from ```pvesm status```
 Delete with ```pvesm remove <<pve name>>```  
 https://192.168.1.208:8006/pve-docs/chapter-pvesm.html#chapter_storage
 
+### Create Kubernetes Template Image
+```
+# Taken from https://github.com/UntouchedWagons/Ubuntu-CloudInit-Docs
+# Download premade cloud-init image
+wget -q https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+
+# Resize disk
+qemu-img resize jammy-server-cloudimg-amd64.img 32G
+
+# Create vm
+qm create 9001 --name "ubuntu-2204-cloudinit-template" --ostype l26 \
+    --memory 1024 \
+    --agent 1 \
+    --bios ovmf --machine q35 --efidisk0 proxmox-vm:0,pre-enrolled-keys=0 \
+    --cpu host --socket 1 --cores 1 \
+    --vga serial0 --serial0 socket  \
+    --net0 virtio,bridge=vmbr0
+
+qm importdisk 9001 jammy-server-cloudimg-amd64.img proxmox-vm
+qm set 9001 --scsihw virtio-scsi-pci --virtio0 proxmox-vm:vm-9001-disk-1,discard=on
+qm set 9001 --boot c --bootdisk virtio0
+qm set 9001 --ide2 proxmox-vm:cloudinit
+
+# Create vendor.yaml to run once after boot
+cat << EOF | tee /var/lib/vz/snippets/vendor.yaml
+#cloud-config
+runcmd:
+    - apt update
+    - apt install -y qemu-guest-agent ca-certificates curl gnupg
+    - install -m 0755 -d /etc/apt/keyrings
+    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    - chmod a+r /etc/apt/keyrings/docker.gpg
+    - systemctl start qemu-guest-agent
+    - echo 'test' > /var/log/testere.log
+    - reboot
+# Taken from https://forum.proxmox.com/threads/combining-custom-cloud-init-with-auto-generated.59008/page-3#post-428772
+EOF
+
+# Configuring CloudInit
+qm set 9001 --cicustom "vendor=local:snippets/vendor.yaml"
+qm set 9001 --tags ubuntu-template,22.04,cloudinit
+qm set 9001 --ciuser proxmox-user
+qm set 9001 --cipassword $(openssl passwd -6 $CLEARTEXT_PASSWORD)
+qm set 9001 --sshkeys ~/.ssh/authorized_keys
+qm set 9001 --ipconfig0 ip=dhcp
+
+# Convert to template
+qm template 9001
+
+```
 
 ## Application Specific
 
