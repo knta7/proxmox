@@ -1,6 +1,27 @@
 # Proxmox Install Documented
 
 
+## To-Do
+- [ ] Create ZFS datasets & NFS shares
+    - [ ] Kubernetes
+    - [ ] Jellyfin
+        - [ ] Config
+        - [ ] Media
+    - [ ] Vaultwarden
+        - [ ] Config
+        - [ ] Postgres Data
+- [ ] Setup K8s cluster
+    - [ ] Sandbox
+    - [ ] Prod
+- [ ] Migrate data in old esxi ZFS to new proxmox ZFS
+    - [ ] Vaultwarden
+        - [ ] Config
+        - [ ] Postgres Data
+    - [ ] Jellyfin
+        - [ ] Config
+        - [ ] Media
+    - [ ] Jenkins
+
 ## LSI 9211-8i flashed to IT mode
 Use DOS to flash firmwware because efi mode does not support things properly  
 https://www.broadcom.com/support/knowledgebase/1211161501344/flashing-firmware-and-bios-on-lsi-sas-hbas  
@@ -28,12 +49,18 @@ zfs set autotrim=on {{pool name}}
 ```
 zfs create ZFS/nextcloud
 zfs create ZFS/kubernetes
+zfs create ZFS/jellyfin
+zfs create ZFS/jellyfin/config
+zfs create ZFS/jellyfin/media
 zfs create ZFS/iso
 zfs create ZFS/proxmox-vm
 zfs create ZFS/proxmox-other
 
 zfs set quota=750G ZFS/nextcloud
 zfs set quota=250G ZFS/kubernetes
+zfs set quota=500G ZFS/jellyfin
+zfs set quota=5G ZFS/jellyfin/config
+zfs set quota=495G ZFS/jellyfin/media
 zfs set quota=100G ZFS/iso
 zfs set quota=100G ZFS/proxmox-vm
 zfs set quota=100G ZFS/proxmox-other
@@ -43,6 +70,8 @@ apt install nfs-kernel-server #ensure that nfs-common is off
 # add no_root_squash if need to manually move files into nextcloud directories (need it to allow chown for www-data user) https://serverfault.com/questions/212178/chown-on-a-mounted-nfs-partition-gives-operation-not-permitted
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/nextcloud
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/kubernetes
+zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/jellyfin/config
+zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/jellyfin/media
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/iso
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/proxmox-other
 
