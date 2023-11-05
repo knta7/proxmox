@@ -110,7 +110,7 @@ qemu-img resize jammy-server-cloudimg-amd64.img 32G
 
 # Create vm
 qm create 9001 --name "ubuntu-2204-cloudinit-template" --ostype l26 \
-    --memory 1024 \
+    --memory 2048 \
     --agent 1 \
     --bios ovmf --machine q35 --efidisk0 proxmox-vm:0,pre-enrolled-keys=0 \
     --cpu host --socket 1 --cores 1 \
@@ -127,10 +127,7 @@ cat << EOF | tee /var/lib/vz/snippets/vendor.yaml
 #cloud-config
 runcmd:
     - apt update
-    - apt install -y qemu-guest-agent ca-certificates curl gnupg
-    - install -m 0755 -d /etc/apt/keyrings
-    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    - chmod a+r /etc/apt/keyrings/docker.gpg
+    - apt install -y qemu-guest-agent
     - systemctl start qemu-guest-agent
     - echo 'test' > /var/log/testere.log
     - reboot
@@ -148,6 +145,9 @@ qm set 9001 --ipconfig0 ip=dhcp
 # Convert to template
 qm template 9001
 
+# If there are common packages tha need to be installed and you want to avoid re-dl every time
+# Run the below command to ensure machine gets new IP every time from template
+echo -n > /etc/machine-id
 ```
 
 ## Application Specific
@@ -184,3 +184,4 @@ Get db backup ```PGPASSWORD="{{password here}}" pg_dump nextcloud_db -h 127.0.0.
     2. ```'datadirectory' => '/mnt/ncdata'``` &rarr; ```'datadirectory' => '/mnt/{{nfs server}}'```
 10. Run ```sudo -u www-data /var/www/nextcloud/occ files:scan --all```
     1. If nextcloud errors to change file permissions to 0770, add ```'check_data_directory_permissions' => false``` to ```/var/www/nextcloud/config/config.php```
+
