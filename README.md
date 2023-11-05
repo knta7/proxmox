@@ -2,23 +2,23 @@
 
 
 ## To-Do
-- [ ] Create ZFS datasets & NFS shares
-    - [ ] Kubernetes
-    - [ ] Jellyfin
-        - [ ] Config
-        - [ ] Media
-    - [ ] Vaultwarden
-        - [ ] Config
-        - [ ] Postgres Data
-- [ ] Setup K8s cluster
+- [x] Create ZFS datasets & NFS shares
+    - [x] Kubernetes
+    - [x] Jellyfin
+        - [x] Config
+        - [x] Media
+    - [x] Vaultwarden
+        - [x] Config
+        - [x] Postgres Data
+- [x] Setup K8s cluster
     - [ ] Sandbox
-    - [ ] Prod
+    - [x] Prod
 - [ ] Migrate data in old esxi ZFS to new proxmox ZFS
-    - [ ] Vaultwarden
-        - [ ] Config
-        - [ ] Postgres Data
+    - [x] Vaultwarden
+        - [x] Config
+        - [x] Postgres Data
     - [ ] Jellyfin
-        - [ ] Config
+        - [x] Config
         - [ ] Media
     - [ ] Jenkins
 
@@ -52,6 +52,9 @@ zfs create ZFS/kubernetes
 zfs create ZFS/jellyfin
 zfs create ZFS/jellyfin/config
 zfs create ZFS/jellyfin/media
+zfs create ZFS/vaultwarden
+zfs create ZFS/vaultwarden/config
+zfs create ZFS/vaultwarden/postgres-data
 zfs create ZFS/iso
 zfs create ZFS/proxmox-vm
 zfs create ZFS/proxmox-other
@@ -61,6 +64,9 @@ zfs set quota=250G ZFS/kubernetes
 zfs set quota=500G ZFS/jellyfin
 zfs set quota=5G ZFS/jellyfin/config
 zfs set quota=495G ZFS/jellyfin/media
+zfs set quota=1G ZFS/vaultwarden
+zfs set quota=0.5G ZFS/vaultwarden/config
+zfs set quota=0.5G ZFS/vaultwarden/postgres-data
 zfs set quota=100G ZFS/iso
 zfs set quota=100G ZFS/proxmox-vm
 zfs set quota=100G ZFS/proxmox-other
@@ -70,8 +76,12 @@ apt install nfs-kernel-server #ensure that nfs-common is off
 # add no_root_squash if need to manually move files into nextcloud directories (need it to allow chown for www-data user) https://serverfault.com/questions/212178/chown-on-a-mounted-nfs-partition-gives-operation-not-permitted
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/nextcloud
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/kubernetes
+zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/jellyfin
+zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/vaultwarden
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/jellyfin/config
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/jellyfin/media
+zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/vaultwarden/config
+zfs set sharenfs='rw=@192.168.1.0/24,sync,no_root_squash' ZFS/vaultwarden/postgres-data # postgres user chown's the folder
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/iso
 zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/proxmox-other
 
