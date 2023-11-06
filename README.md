@@ -144,9 +144,54 @@ qm set 9001 --ipconfig0 ip=dhcp
 
 # Convert to template
 qm template 9001
+```
 
-# If there are common packages tha need to be installed and you want to avoid re-dl every time
-# Run the below command to ensure machine gets new IP every time from template
+***NOTE***  
+**If there are common packages tha need to be installed and you want to avoid the template re-dl every time (aka set up golden image), run VM before converting to template and manually install- remember to truncate /etc/machine-id**
+```
+# Packages manually installed onto template to save time:
+## Docker
+sudo apt-get update -y
+sudo apt-get install -y ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update -y
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+## kubeadm
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+
+## cri-dockerd
+wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.4/cri-dockerd_0.3.4.3-0.ubuntu-jammy_amd64.deb
+dpkg -i cri-dockerd_0.3.4.3-0.ubuntu-jammy_amd64.deb
+systemctl daemon-reload
+systemctl enable --now cri-docker.socket
+
+## On kubernetes master node- create join token
+kubeadm token create --ttl 0
+
+## On template cloud init- include following line in vendor.yaml
+cat << EOF | tee /var/lib/vz/snippets/vendor.yaml
+#cloud-config
+runcmd:
+    - kubeadm join 192.168.1.252:6443 --token TOKEN_FROM_BEFORE_HERE --discovery-token-ca-cert-hash CA_CERT_HERE --cri-socket=unix:///var/run/cri-dockerd.sock
+# Taken from https://forum.proxmox.com/threads/combining-custom-cloud-init-with-auto-generated.59008/page-3#post-428772
+EOF
+
+## Apply and clone VM and test before finally converting to template
+
+# Run the below command which truncates /etc/machine-id and ensures every machine gets new IP every time from cloning template
 echo -n > /etc/machine-id
 ```
 
