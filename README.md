@@ -230,3 +230,7 @@ Get db backup ```PGPASSWORD="{{password here}}" pg_dump nextcloud_db -h 127.0.0.
 10. Run ```sudo -u www-data /var/www/nextcloud/occ files:scan --all```
     1. If nextcloud errors to change file permissions to 0770, add ```'check_data_directory_permissions' => false``` to ```/var/www/nextcloud/config/config.php```
 
+### Kubernetes
+
+#### KProximate
+- If you already injected SSH key into VM, disable SSH key injection otherwise you get 400 Parameter Validation error
