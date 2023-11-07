@@ -230,6 +230,17 @@ Get db backup ```PGPASSWORD="{{password here}}" pg_dump nextcloud_db -h 127.0.0.
 10. Run ```sudo -u www-data /var/www/nextcloud/occ files:scan --all```
     1. If nextcloud errors to change file permissions to 0770, add ```'check_data_directory_permissions' => false``` to ```/var/www/nextcloud/config/config.php```
 
+### Deluge + Wireguard (VM)
+https://mullvad.net/en/help/wireguard-and-mullvad-vpn/
+1. `curl -o mullvad-wg.sh https://raw.githubusercontent.com/mullvad/mullvad-wg.sh/main/mullvad-wg.sh`
+2. `chmod +x ./mullvad-wg.sh && ./mullvad-wg.sh`
+3. `apt install openresolv`
+4. `cd /etc/wireguard`
+5. `wg-quick up us-nyc-wg-501.conf`
+6. `curl https://am.i.mullvad.net/connected`
+7. `wg-quick down us-nyc-wg-501.conf`
+8. `systemctl enable wg-quick@us-nyc-wg-501`
+
 ### Kubernetes
 
 #### KProximate
