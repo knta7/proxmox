@@ -79,7 +79,7 @@ zfs set sharenfs='rw=@192.168.1.0/16,sync,no_root_squash' ZFS/kubernetes
 zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/jellyfin
 zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/vaultwarden
 zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/jellyfin/config
-zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/jellyfin/media
+zfs set sharenfs='rw=@192.168.1.0/16,sync,no_root_squash,nolock' ZFS/jellyfin/media
 zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/vaultwarden/config
 zfs set sharenfs='rw=@192.168.1.0/16,sync,no_root_squash' ZFS/vaultwarden/postgres-data # postgres user chown's the folder
 zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/iso
