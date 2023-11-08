@@ -240,6 +240,7 @@ https://mullvad.net/en/help/wireguard-and-mullvad-vpn/
 6. `curl https://am.i.mullvad.net/connected`
 7. `wg-quick down us-nyc-wg-501.conf`
 8. `systemctl enable wg-quick@us-nyc-wg-501`
+9. Add to `/etc/fstab` `192.168.1.208:/ZFS/jellyfin/media /media defaults 0 0`
 
 ### Kubernetes
 
