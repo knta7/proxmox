@@ -73,17 +73,17 @@ zfs set quota=100G ZFS/proxmox-other
 
 apt install nfs-kernel-server #ensure that nfs-common is off
 
-# add no_root_squash if need to manually move files into nextcloud directories (need it to allow chown for www-data user) https://serverfault.com/questions/212178/chown-on-a-mounted-nfs-partition-gives-operation-not-permitted
-zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/nextcloud
-zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/kubernetes
-zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/jellyfin
-zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/vaultwarden
-zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/jellyfin/config
-zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/jellyfin/media
-zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/vaultwarden/config
-zfs set sharenfs='rw=@192.168.1.0/24,sync,no_root_squash' ZFS/vaultwarden/postgres-data # postgres user chown's the folder
-zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/iso
-zfs set sharenfs='rw=@192.168.1.0/24,sync' ZFS/proxmox-other
+# add no_root_squash if need to allow chown for files (eg nextcloud and www-data user) https://serverfault.com/questions/212178/chown-on-a-mounted-nfs-partition-gives-operation-not-permitted
+zfs set sharenfs='rw=@192.168.1.0/16,sync,no_root_squash' ZFS/nextcloud
+zfs set sharenfs='rw=@192.168.1.0/16,sync,no_root_squash' ZFS/kubernetes
+zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/jellyfin
+zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/vaultwarden
+zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/jellyfin/config
+zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/jellyfin/media
+zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/vaultwarden/config
+zfs set sharenfs='rw=@192.168.1.0/16,sync,no_root_squash' ZFS/vaultwarden/postgres-data # postgres user chown's the folder
+zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/iso
+zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/proxmox-other
 
 # Add nextcloud & kubernetes as ZFS storage
 # Datacenter -> Storage -> ZFS -> Select Dataset, Thin-Provisioning
