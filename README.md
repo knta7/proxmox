@@ -43,9 +43,16 @@ zpool get all
 ```
 # For SSD only storage
 zfs set autotrim=on {{pool name}}
+
+#ensure that nfs-common is off- nfs-common does not create nfs server properly
+apt install nfs-kernel-server 
 ```
 
+See physical sector size using `fdisk -l`  
+Set ashift equal to physical sector size (2^(ashiftvalue) &rarr; 2^12 = 4096 == sector size)  
+
 ### ZFS Pool & NFS Config
+#### SSD
 ```
 zfs create ZFS/nextcloud
 zfs create ZFS/kubernetes
@@ -61,9 +68,9 @@ zfs create ZFS/proxmox-other
 
 zfs set quota=750G ZFS/nextcloud
 zfs set quota=250G ZFS/kubernetes
-zfs set quota=500G ZFS/jellyfin
+zfs set quota=1T ZFS/jellyfin
 zfs set quota=5G ZFS/jellyfin/config
-zfs set quota=495G ZFS/jellyfin/media
+zfs set quota=995G ZFS/jellyfin/media
 zfs set quota=1G ZFS/vaultwarden
 zfs set quota=0.5G ZFS/vaultwarden/config
 zfs set quota=0.5G ZFS/vaultwarden/postgres-data
@@ -71,25 +78,37 @@ zfs set quota=100G ZFS/iso
 zfs set quota=100G ZFS/proxmox-vm
 zfs set quota=100G ZFS/proxmox-other
 
-apt install nfs-kernel-server #ensure that nfs-common is off
-
 # add no_root_squash if need to allow chown for files (eg nextcloud and www-data user) https://serverfault.com/questions/212178/chown-on-a-mounted-nfs-partition-gives-operation-not-permitted
-zfs set sharenfs='rw=@192.168.1.0/16,sync,no_root_squash' ZFS/nextcloud
-zfs set sharenfs='rw=@192.168.1.0/16,sync,no_root_squash' ZFS/kubernetes
-zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/jellyfin
-zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/vaultwarden
-zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/jellyfin/config
-zfs set sharenfs='rw=@192.168.1.0/16,sync,no_root_squash,nolock' ZFS/jellyfin/media
-zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/vaultwarden/config
-zfs set sharenfs='rw=@192.168.1.0/16,sync,no_root_squash' ZFS/vaultwarden/postgres-data # postgres user chown's the folder
-zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/iso
-zfs set sharenfs='rw=@192.168.1.0/16,sync' ZFS/proxmox-other
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/nextcloud
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/kubernetes
+zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/jellyfin
+zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/vaultwarden
+zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/jellyfin/config
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/jellyfin/media
+zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/vaultwarden/config
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/vaultwarden/postgres-data # postgres user chown's the folder
+zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/iso
+zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/proxmox-other
 
 # Add nextcloud & kubernetes as ZFS storage
 # Datacenter -> Storage -> ZFS -> Select Dataset, Thin-Provisioning
 
 # Add Proxmox as NFS server
 # Datacenter -> Storage -> NFS
+```
+
+#### HDD
+```
+zfs create HDD/jellyfin
+zfs create HDD/jellyfin/media
+zfs create HDD/iso
+
+zfs set quota=10T HDD/jellyfin
+zfs set quota=10T HDD/jellyfin/media
+zfs set quota=500G HDD/iso
+
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' HDD/jellyfin/media
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' HDD/iso
 ```
 
 ## Proxmox Specific
