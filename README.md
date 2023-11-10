@@ -10,16 +10,23 @@
     - [x] Vaultwarden
         - [x] Config
         - [x] Postgres Data
+    - [ ] Create new HDD ZFS
+        - [ ] Migrate large uncompressable + sequential media to HDD ZFS
 - [x] Setup K8s cluster
     - [ ] Sandbox
     - [x] Prod
+        - [ ] Setup Prometheus
+    - [ ] Monitoring
+        - [ ] Disk (IO, Usage, Temps, SMART)
+        - [ ] Internet
+        - [ ] Component Temps
 - [ ] Migrate data in old esxi ZFS to new proxmox ZFS
     - [x] Vaultwarden
         - [x] Config
         - [x] Postgres Data
-    - [ ] Jellyfin
+    - [x] Jellyfin
         - [x] Config
-        - [ ] Media
+        - [x] Media
     - [ ] Jenkins
 
 ## LSI 9211-8i flashed to IT mode
