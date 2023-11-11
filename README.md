@@ -76,9 +76,8 @@ zfs create ZFS/proxmox-other
 
 zfs set quota=750G ZFS/nextcloud
 zfs set quota=250G ZFS/kubernetes
-zfs set quota=1T ZFS/jellyfin
+zfs set quota=5G ZFS/jellyfin
 zfs set quota=5G ZFS/jellyfin/config
-zfs set quota=995G ZFS/jellyfin/media
 zfs set quota=1G ZFS/vaultwarden
 zfs set quota=0.5G ZFS/vaultwarden/config
 zfs set quota=0.5G ZFS/vaultwarden/postgres-data
@@ -92,7 +91,6 @@ zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/kubernetes
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/jellyfin
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/vaultwarden
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/jellyfin/config
-zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/jellyfin/media
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/vaultwarden/config
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/vaultwarden/postgres-data # postgres user chown's the folder
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/iso
