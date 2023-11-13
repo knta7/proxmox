@@ -269,5 +269,47 @@ https://mullvad.net/en/help/wireguard-and-mullvad-vpn/
 
 ### Kubernetes
 
+
+### Monitoring
+#### Node Exporter
+```
+wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
+tar xvfs node_exporter-1.6.1.linux-amd64.tar.gz
+cd node_exporter-1.6.1.linux-amd64/
+cp node_exporter /usr/bin/
+```
+Create systemd service
+```
+cat /etc/systemd/system/node-exporter.service
+[Unit]
+Description=Promtheus Node Exporter
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/bin/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+```
+
+#### SMART metrics (avoding textfile)
+Using https://github.com/matusnovak/prometheus-smartctl
+```
+cat /etc/systemd/system/smartprom.service
+[Unit]
+Description=SMART Prometheus metrics
+
+[Service]
+ExecStart=/var/lib/homelab/smartprom.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
 #### KProximate
 - If you already injected SSH key into VM, disable SSH key injection otherwise you get 400 Parameter Validation error
