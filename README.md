@@ -271,7 +271,7 @@ https://mullvad.net/en/help/wireguard-and-mullvad-vpn/
 
 
 ### Monitoring
-#### Node Exporter
+#### Node Exporter Including Disk Metrics
 ```
 wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
 tar xvfs node_exporter-1.6.1.linux-amd64.tar.gz
@@ -290,25 +290,21 @@ Type=simple
 Restart=always
 RestartSec=1
 User=root
-ExecStart=/usr/bin/node_exporter
+ExecStart=/usr/bin/node_exporter --collector.textfile.directory=/var/lib/node_exporter/textfile_collector
 
 [Install]
 WantedBy=multi-user.target
 ```
-
-#### SMART metrics (avoding textfile)
-Using https://github.com/matusnovak/prometheus-smartctl
+Using https://github.com/micha37-martins/S.M.A.R.T-disk-monitoring-for-Prometheus  
 ```
-cat /etc/systemd/system/smartprom.service
-[Unit]
-Description=SMART Prometheus metrics
+# Download smartmon.sh from github
+# setup crontab
 
-[Service]
-ExecStart=/var/lib/homelab/smartprom.py
-Restart=always
+crontab -e
 
-[Install]
-WantedBy=multi-user.target
+*/5 * * * * /usr/local/bin/smartmon.sh > /var/lib/node_exporter/textfile_collector/smart_metrics.prom
+
+service cron reload
 ```
 
 #### KProximate
