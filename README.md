@@ -139,7 +139,6 @@ qm create 9001 --name "ubuntu-2204-cloudinit-template" --ostype l26 \
     --agent 1 \
     --bios ovmf --machine q35 --efidisk0 proxmox-vm:0,pre-enrolled-keys=0 \
     --cpu host --socket 1 --cores 1 \
-    --vga serial0 --serial0 socket  \
     --net0 virtio,bridge=vmbr0
 
 qm importdisk 9001 jammy-server-cloudimg-amd64.img proxmox-vm
@@ -173,6 +172,7 @@ qm template 9001
 
 ***NOTE***  
 **If there are common packages tha need to be installed and you want to avoid the template re-dl every time (aka set up golden image), run VM before converting to template and manually install- remember to truncate /etc/machine-id**
+#### Docker CRI
 ```
 # Packages manually installed onto template to save time:
 ## Docker
@@ -218,6 +218,50 @@ EOF
 
 # Run the below command which truncates /etc/machine-id and ensures every machine gets new IP every time from cloning template
 echo -n > /etc/machine-id
+```
+
+#### ContainerD CRI
+```
+sudo modprobe overlay
+sudo modprobe br_netfilter
+cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+sudo apt-get update
+sudo apt-get install -y containerd
+
+sudo mkdir -p /etc/containerd
+sudo containerd config default | sudo tee /etc/containerd/config.toml
+
+# Edit /etc/containerd/config.toml
+# find the [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options] section and change systemdcgroup to true
+# ex: SystemdCgroup = true
+
+sudo systemctl restart containerd
+sudo systemctl enable containerd
+
+cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+sudo sysctl --system
+
+sudo swapoff -a
+sudo ufw disable
+
+# Use iptables-legacy (did not try)
+sudo update-alternatives --config iptables
+
+## kubeadm
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
 ## Application Specific
