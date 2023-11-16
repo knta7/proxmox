@@ -262,6 +262,12 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
+#### Post Manual Package Install
+```
+sudo cloud-init clean --logs
+
+echo -n > /etc/machine-id
+```
 
 ## Application Specific
 
