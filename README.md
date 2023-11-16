@@ -151,9 +151,8 @@ cat << EOF | tee /var/lib/vz/snippets/vendor.yaml
 #cloud-config
 runcmd:
     - apt update
-    - apt install -y qemu-guest-agent
+    - apt install -y qemu-guest-agent nfs-common
     - systemctl start qemu-guest-agent
-    - echo 'test' > /var/log/testere.log
     - reboot
 # Taken from https://forum.proxmox.com/threads/combining-custom-cloud-init-with-auto-generated.59008/page-3#post-428772
 EOF
