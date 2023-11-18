@@ -124,6 +124,20 @@ Gather pve name from ```pvesm status```
 Delete with ```pvesm remove <<pve name>>```  
 https://192.168.1.208:8006/pve-docs/chapter-pvesm.html#chapter_storage
 
+### Remove directory mounts
+Must do it via console
+```
+lsblk
+umount <mount point>
+rm /etc/systemd/system/mnt-pve-testdir.mount
+
+#Gather pve name from
+pvesm status
+
+#Delete with 
+pvesm remove <pve name>
+```
+
 ### Create Kubernetes Template Image
 ```
 # Taken from https://github.com/UntouchedWagons/Ubuntu-CloudInit-Docs
