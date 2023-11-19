@@ -142,23 +142,28 @@ pvesm remove <pve name>
 ```
 # Taken from https://github.com/UntouchedWagons/Ubuntu-CloudInit-Docs
 # Download premade cloud-init image
-wget -q https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
 
-# Resize disk
-qemu-img resize jammy-server-cloudimg-amd64.img 32G
+#!/bin/bash
+VM_ID=$1
+storage=$2
+
+if [[ -z $1 || -z $2 ]]; then
+        echo "Variable not set"
+        exit 1
+fi
 
 # Create vm
-qm create 9001 --name "ubuntu-2204-cloudinit-template" --ostype l26 \
+qm create $VM_ID --name "ubuntu-2204-cloudinit-template" --ostype l26 \
     --memory 2048 \
     --agent 1 \
-    --bios ovmf --machine q35 --efidisk0 proxmox-vm:0,pre-enrolled-keys=0 \
-    --cpu host --socket 1 --cores 1 \
+    --bios ovmf --machine q35 --efidisk0 $storage:0,pre-enrolled-keys=0 \
+    --cpu host --socket 1 --cores 2 \
     --net0 virtio,bridge=vmbr0
 
-qm importdisk 9001 jammy-server-cloudimg-amd64.img proxmox-vm
-qm set 9001 --scsihw virtio-scsi-pci --virtio0 proxmox-vm:vm-9001-disk-1,discard=on
-qm set 9001 --boot c --bootdisk virtio0
-qm set 9001 --ide2 proxmox-vm:cloudinit
+qm importdisk $VM_ID jammy-server-cloudimg-amd64.img $storage
+qm set $VM_ID --scsihw virtio-scsi-pci --virtio0 $storage:$VM_ID/vm-$VM_ID-disk-1.raw
+qm set $VM_ID --boot c --bootdisk virtio0
+qm set $VM_ID --ide2 $storage:cloudinit
 
 # Create vendor.yaml to run once after boot
 cat << EOF | tee /var/lib/vz/snippets/vendor.yaml
@@ -167,20 +172,23 @@ runcmd:
     - apt update
     - apt install -y qemu-guest-agent nfs-common
     - systemctl start qemu-guest-agent
+    - swapoff -a
+    - ufw disable
+    - echo \`date\` > /var/log/cloud-init-completed.log
     - reboot
 # Taken from https://forum.proxmox.com/threads/combining-custom-cloud-init-with-auto-generated.59008/page-3#post-428772
 EOF
 
 # Configuring CloudInit
-qm set 9001 --cicustom "vendor=local:snippets/vendor.yaml"
-qm set 9001 --tags ubuntu-template,22.04,cloudinit
-qm set 9001 --ciuser proxmox-user
-qm set 9001 --cipassword $(openssl passwd -6 $CLEARTEXT_PASSWORD)
-qm set 9001 --sshkeys ~/.ssh/authorized_keys
-qm set 9001 --ipconfig0 ip=dhcp
+qm set $VM_ID --cicustom "vendor=local:snippets/vendor.yaml"
+qm set $VM_ID --tags ubuntu-template,22.04,cloudinit
+qm set $VM_ID --ciuser px-user
+qm set $VM_ID --cipassword $(openssl passwd -6 $CLEARTEXT_PASSWORD)
+qm set $VM_ID --sshkeys ~/.ssh/authorized_keys
+qm set $VM_ID --ipconfig0 ip=dhcp
 
 # Convert to template
-qm template 9001
+#qm template $VM_ID
 ```
 
 ***NOTE***  
