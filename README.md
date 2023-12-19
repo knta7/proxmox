@@ -108,13 +108,18 @@ zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/proxmox-other
 zfs create HDD/jellyfin
 zfs create HDD/jellyfin/media
 zfs create HDD/iso
+zfs create HDD/kubernetes
+zfs create HDD/kubernetes/logs
 
 zfs set quota=10T HDD/jellyfin
 zfs set quota=10T HDD/jellyfin/media
 zfs set quota=500G HDD/iso
+zfs set quota=1T HDD/kubernetes
+zfs set quota=500G HDD/kubernetes/logs
 
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' HDD/jellyfin/media
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' HDD/iso
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' HDD/kubernetes/logs
 ```
 
 ## Proxmox Specific
