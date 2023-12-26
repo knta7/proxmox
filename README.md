@@ -72,6 +72,7 @@ zfs create ZFS/vaultwarden/config
 zfs create ZFS/vaultwarden/postgres-data
 zfs create ZFS/gitea
 zfs create ZFS/gitea/config
+zfs create ZFS/gitea/data
 zfs create ZFS/gitea/postgres-data
 zfs create ZFS/iso
 zfs create ZFS/proxmox-vm
@@ -84,9 +85,10 @@ zfs set quota=5G ZFS/jellyfin/config
 zfs set quota=1G ZFS/vaultwarden
 zfs set quota=0.5G ZFS/vaultwarden/config
 zfs set quota=0.5G ZFS/vaultwarden/postgres-data
-zfs set quota=1G ZFS/gitea
+zfs set quota=5G ZFS/gitea
 zfs set quota=0.5G ZFS/gitea/config
-zfs set quota=0.5G ZFS/gitea/postgres-data
+zfs set quota=0.5G ZFS/gitea/data
+zfs set quota=4G ZFS/gitea/postgres-data
 zfs set quota=100G ZFS/iso
 zfs set quota=100G ZFS/proxmox-vm
 zfs set quota=100G ZFS/proxmox-other
@@ -100,6 +102,7 @@ zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/jellyfin/config
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/vaultwarden/config
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/vaultwarden/postgres-data # postgres user chown's the folder
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/gitea/config
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/gitea/data
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/gitea/postgres-data
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/iso
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/proxmox-other
