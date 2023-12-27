@@ -120,15 +120,18 @@ zfs create HDD/jellyfin
 zfs create HDD/jellyfin/media
 zfs create HDD/iso
 zfs create HDD/kubernetes
+zfs create HDD/file-server
 
 zfs set quota=10T HDD/jellyfin
 zfs set quota=10T HDD/jellyfin/media
 zfs set quota=500G HDD/iso
 zfs set quota=1T HDD/kubernetes
+zfs set quota=100G HDD/file-server
 
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' HDD/jellyfin/media
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' HDD/iso
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' HDD/kubernetes
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' HDD/file-server
 ```
 
 ## Proxmox Specific
