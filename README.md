@@ -77,6 +77,7 @@ zfs create ZFS/gitea/postgres-data
 zfs create ZFS/iso
 zfs create ZFS/proxmox-vm
 zfs create ZFS/proxmox-other
+zfs create ZFS/game-data
 
 zfs set quota=750G ZFS/nextcloud
 zfs set quota=250G ZFS/kubernetes
@@ -92,6 +93,7 @@ zfs set quota=4G ZFS/gitea/postgres-data
 zfs set quota=100G ZFS/iso
 zfs set quota=100G ZFS/proxmox-vm
 zfs set quota=100G ZFS/proxmox-other
+zfs set quota=50G ZFS/game-data
 
 # add no_root_squash if need to allow chown for files (eg nextcloud and www-data user) https://serverfault.com/questions/212178/chown-on-a-mounted-nfs-partition-gives-operation-not-permitted
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/nextcloud
