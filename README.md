@@ -116,6 +116,8 @@ zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/iso
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/proxmox-other
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/game-data/terraria
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/test
+zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/test/vaultwarden/config
+zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/test/vaultwarden/postgres-data
 
 # Add nextcloud & kubernetes as ZFS storage
 # Datacenter -> Storage -> ZFS -> Select Dataset, Thin-Provisioning
