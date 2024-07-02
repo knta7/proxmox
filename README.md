@@ -80,6 +80,8 @@ zfs create ZFS/proxmox-other
 zfs create ZFS/game-data
 zfs create ZFS/game-data/terraria
 zfs create ZFS/test
+zfs create ZFS/test/vaultwarden/config
+zfs create ZFS/test/vaultwarden/postgres-data
 
 zfs set quota=750G ZFS/nextcloud
 zfs set quota=250G ZFS/kubernetes
