@@ -82,6 +82,7 @@ zfs create ZFS/game-data/terraria
 zfs create ZFS/test
 zfs create ZFS/test/vaultwarden/config
 zfs create ZFS/test/vaultwarden/postgres-data
+zfs create ZFS/cfg
 
 zfs set quota=750G ZFS/nextcloud
 zfs set quota=250G ZFS/kubernetes
@@ -100,6 +101,7 @@ zfs set quota=100G ZFS/proxmox-other
 zfs set quota=150G ZFS/game-data
 zfs set quota=50G ZFS/game-data/terraria
 zfs set quota=50G ZFS/test
+zfs set quota=1G ZFS/cfg
 
 # add no_root_squash if need to allow chown for files (eg nextcloud and www-data user) https://serverfault.com/questions/212178/chown-on-a-mounted-nfs-partition-gives-operation-not-permitted
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/nextcloud
@@ -118,6 +120,7 @@ zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/game-data/terraria
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/test
 zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/test/vaultwarden/config
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/test/vaultwarden/postgres-data
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/cfg
 
 # Add nextcloud & kubernetes as ZFS storage
 # Datacenter -> Storage -> ZFS -> Select Dataset, Thin-Provisioning
