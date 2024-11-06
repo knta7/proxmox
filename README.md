@@ -84,7 +84,7 @@ zfs create ZFS/test/vaultwarden/config
 zfs create ZFS/test/vaultwarden/postgres-data
 zfs create ZFS/cfg
 
-zfs set quota=750G ZFS/nextcloud
+zfs set quota=1000G ZFS/nextcloud
 zfs set quota=250G ZFS/kubernetes
 zfs set quota=5G ZFS/jellyfin
 zfs set quota=5G ZFS/jellyfin/config
