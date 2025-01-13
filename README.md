@@ -84,6 +84,8 @@ zfs create ZFS/test/vaultwarden/config
 zfs create ZFS/test/vaultwarden/postgres-data
 zfs create ZFS/cfg
 zfs create ZFS/jenkins
+zfs create ZFS/jenkins/home
+zfs create ZFS/jenkins/config
 
 zfs set quota=1000G ZFS/nextcloud
 zfs set quota=250G ZFS/kubernetes
@@ -103,7 +105,9 @@ zfs set quota=150G ZFS/game-data
 zfs set quota=50G ZFS/game-data/terraria
 zfs set quota=50G ZFS/test
 zfs set quota=1G ZFS/cfg
-zfs set quota=10G ZFS/jenkins
+zfs set quota=20G ZFS/jenkins
+zfs set quota=10G ZFS/jenkins/home
+zfs set quota=10G ZFS/jenkins/config
 
 # add no_root_squash if need to allow chown for files (eg nextcloud and www-data user) https://serverfault.com/questions/212178/chown-on-a-mounted-nfs-partition-gives-operation-not-permitted
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/nextcloud
@@ -124,6 +128,8 @@ zfs set sharenfs='rw=@192.168.1.1/16,sync' ZFS/test/vaultwarden/config
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/test/vaultwarden/postgres-data
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/cfg
 zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/jenkins
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/jenkins/home
+zfs set sharenfs='rw=@192.168.1.1/16,sync,no_root_squash' ZFS/jenkins/config
 
 # Add nextcloud & kubernetes as ZFS storage
 # Datacenter -> Storage -> ZFS -> Select Dataset, Thin-Provisioning
