@@ -333,6 +333,15 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
+#### VM Statuses Unknown
+https://forum.proxmox.com/threads/vm-status-unknown-grey-question-mark.92359/  
+Fix by restarting pvestatd.service  
+```bash
+systemctl status pvestatd.service
+systemctl restart pvestatd.service # this failed for me last time
+systemctl start pvestatd.service # this worked- not sure why
+```
+
 #### Post Manual Package Install
 ```
 sudo cloud-init clean --logs
