@@ -399,6 +399,38 @@ https://mullvad.net/en/help/wireguard-and-mullvad-vpn/
 ### Arr Setup
 https://wiki.servarr.com/install-script
 
+```
+docker run -d \
+  --name=flaresolverr \
+  -p 8191:8191 \
+  -e LOG_LEVEL=info \
+  --restart unless-stopped \
+  ghcr.io/flaresolverr/flaresolverr:latest
+
+docker run -d \
+  --name=jackett \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e TZ=Etc/UTC \
+  -e AUTO_UPDATE=true `#optional` \
+  -e RUN_OPTS= `#optional` \
+  -p 9117:9117 \
+  --restart unless-stopped \
+  lscr.io/linuxserver/jackett:latest
+
+docker run -d \
+  --name=radarr \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e TZ=Etc/UTC \
+  -p 7878:7878 \
+  -v /var/lib/radarr:/config \
+  -v /media/movies:/media/movies \
+  -v /media/tmp:/media/tmp  \
+  --restart unless-stopped \
+  lscr.io/linuxserver/radarr:latest
+```
+
 
 ### Kubernetes
 
